@@ -17,7 +17,7 @@ class get_web:
         # 规避被检测的风险
         option = ChromeOptions()
         option.add_experimental_option('excludeSwitches', ['enable-automation'])
-        broswer = webdriver.Chrome(executable_path="C:\\Users\\周琪雨\\Desktop\\爬取内蒙古高考教育网站\\chromedriver.exe", options=option)
+        broswer = webdriver.Chrome(executable_path="D:\\Desktop\\web-crawler\\爬取内蒙古高考教育网站\\chromedriver.exe", options=option)
         self.broswer = broswer
         self.wait = WebDriverWait(broswer, 5)
 
@@ -33,7 +33,7 @@ class get_web:
 
         work = Workbook()
         sheet = work.active
-        tittle = ['专业代号', '专业名称', '填报次序', '最高分', '最低分', '最低分位次', '录取人数']
+        tittle = ['专业代号', '专业名称', '填报次序', '最高分', '最低分', '最低分位次', '录取人数','院校名称']
         sheet.append(tittle)
         work.save(filename="data.xlsx")
 
@@ -89,7 +89,7 @@ class get_web:
                                     # 获取表格对应的位置的连接
                                     try:
                                         studentInfo = []
-                                        for o in range(1, 8):
+                                        for o in range(1, 9):
                                             if o == 2:
                                                 try:
                                                     studentInfo.append(self.find_xpath(
@@ -106,10 +106,17 @@ class get_web:
                                                                                                                     o)).text)
                                                 except TimeoutException:
                                                     studentInfo.append("")
+                                            elif o == 8:
+                                                try:
+                                                    studentInfo.append(self.find_xpath('/html/body/center/font[1]/font/form[4]/select/option[{}]'.format(s4)).text)
+                                                    
+                                                except TimeoutException:
+                                                    studentInfo.append("")
                                             else:
                                                 studentInfo.append(self.find_xpath(
                                                     '/html/body/center/p[2]/table/tbody/tr[{}]/td[{}]/p'.format(zy,
                                                                                                                 o)).text)
+                                            
                                     except TimeoutException:
                                         continue
                                     sheet.append(studentInfo)
